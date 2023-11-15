@@ -40,19 +40,21 @@ namespace Authentication_Service.Models
             return inputPassword == inputConfirmPassword;
         }
 
-       
-        public string? HashPassword(string inputPassword)
-        {
-            if (!string.IsNullOrEmpty(inputPassword))
-            {
-                string encryptedPassword = BCrypt.Net.BCrypt.HashPassword(inputPassword);
-                Password = encryptedPassword;
-                PasswordConfirm = "";
-                return encryptedPassword;
-            }
-            return null;
 
+        public string HashPassword(string inputPassword)
+        {
+            if (string.IsNullOrEmpty(inputPassword))
+            {
+                throw new ArgumentException("Input password cannot be null or empty.");
+            }
+
+            string encryptedPassword = BCrypt.Net.BCrypt.HashPassword(inputPassword);
+            Password = encryptedPassword; 
+            PasswordConfirm = ""; 
+
+            return encryptedPassword;
         }
+
 
         public bool VerifyPassword(string enteredPassword, string hashedPassword)
         {

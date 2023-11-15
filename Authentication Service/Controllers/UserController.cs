@@ -73,14 +73,9 @@ namespace Authentication_Service.Controllers
         [HttpPost("Login", Name = "Login")]
         public async Task<IActionResult> Login([FromBody] Login login)
         {
-            if (string.IsNullOrEmpty(login.Email))
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Email cannot be null");
-            }
-
-            if (string.IsNullOrEmpty(login.Password))
-            {
-                return BadRequest("Password cannot be null");
+                return BadRequest(ModelState);
             }
 
             var user = await _context.User.FirstOrDefaultAsync(u => u.Email == login.Email).ConfigureAwait(false);
@@ -96,9 +91,54 @@ namespace Authentication_Service.Controllers
             return Ok(new { token });
 
         }
+        [HttpPatch("UpdatePassword/{userId}", Name= "UpdatePassword")]
+        public async Task<IActionResult> UpdateUserPassword(int userId, [FromBody] UserPasswordUpdateModel userPasswordUpdateModel)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var user = await _context.User.FindAsync(userId);
+
+                if (user == null)
+                {
+                    return BadRequest("user not found with that ID");
+                }
+
+                if (!user.VerifyPassword(userPasswordUpdateModel.CurrentPassword, user.Password))
+                {
+                    return BadRequest("Invalid current password");
+                }
+
+                if (!user.ConfirmPasswords(userPasswordUpdateModel.NewPassword, userPasswordUpdateModel.NewPasswordConfirm))
+                {
+                    return BadRequest("new passwords do not match");
+                }
+
+
+                user.Password = user.HashPassword(userPasswordUpdateModel.NewPassword);
+
+
+                await _context.SaveChangesAsync();
+
+                return Ok("success pasword update");
+            }
+            catch(ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, "An error occurred while updating the password");
+            }
+            
+        }
 
         [HttpPatch("EditUserAccount/{userId}", Name = "EditUserAccount")]
-        public async Task<ActionResult> JsonPatchWithModelState(int userId, [FromBody] JsonPatchDocument<UserUpdateModel> patchDoc)
+        public async Task<ActionResult> EditUserInformation(int userId, [FromBody] JsonPatchDocument<UserUpdateModel> patchDoc)
         {
             if (patchDoc == null)
             {
