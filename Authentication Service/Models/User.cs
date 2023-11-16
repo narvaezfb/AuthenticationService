@@ -1,11 +1,6 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Text.RegularExpressions;
-using BCrypt.Net;
-using Microsoft.IdentityModel.Tokens;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace Authentication_Service.Models
 {
@@ -34,7 +29,13 @@ namespace Authentication_Service.Models
         [Required(ErrorMessage = "Password Confirm is required")]
         public required string PasswordConfirm { get; set; }
 
+
+        public string? ResetPasswordToken { get; set; }
         
+        public DateTime ResetPasswordTokenExpiry { get; set; }
+
+
+
         public bool ConfirmPasswords(string inputPassword, string inputConfirmPassword)
         {
             return inputPassword == inputConfirmPassword;
@@ -67,6 +68,51 @@ namespace Authentication_Service.Models
             return BCrypt.Net.BCrypt.Verify(enteredPassword, hashedPassword);
         }
 
+     
+        public string GeneratePasswordResetToken()
+        {
+            // Generate a unique token for resetting the password 
+            return Guid.NewGuid().ToString();
+        }
+
+        // Helper method to send a password reset email (use your own logic here)
+        async public Task SendPasswordResetEmail(string userEmail, string token)
+        {
+            try
+            {
+                var apiKey = "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";
+                var client = new SendGridClient(apiKey);
+
+                var from = new EmailAddress("narvaezfb4@hotmail.com");
+                var subject = "Sending with SendGrid is Fun";
+                var to = new EmailAddress(userEmail);
+                var plainTextContent = "and easy to do anywhere, even with C#";
+                var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
+
+                var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+                var response = await client.SendEmailAsync(msg);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK && response.StatusCode != System.Net.HttpStatusCode.Accepted)
+                {
+                    // Handle error or log unsuccessful email sending
+                    // You may want to throw an exception or log this for further investigation
+                    // For example:
+                    Console.WriteLine($"Email sending failed with status codee: {response.StatusCode}");
+                }
+                else
+                {
+                    Console.WriteLine(response.StatusCode);
+                }
+            }
+            catch(Exception ex)
+            {
+                // Handle exceptions during email sending
+                // For example:
+                Console.WriteLine($"Error sending email: {ex.Message}");
+                throw; // Propagate the exception up the call stack
+            }
+
+        }
     }
 }
 
