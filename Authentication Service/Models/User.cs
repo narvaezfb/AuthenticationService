@@ -80,7 +80,7 @@ namespace Authentication_Service.Models
         {
             try
             {
-                var apiKey = "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";
+                var apiKey = Environment.GetEnvironmentVariable("EMAIL_PROVIDER_KEY");
                 var client = new SendGridClient(apiKey);
 
                 var from = new EmailAddress("narvaezfb4@hotmail.com");
