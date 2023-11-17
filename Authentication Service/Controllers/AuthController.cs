@@ -152,7 +152,7 @@ namespace Authentication_Service.Controllers
             var token = user.GeneratePasswordResetToken();
 
             user.ResetPasswordToken = token;
-            user.ResetPasswordTokenExpiry = DateTime.UtcNow.AddHours(1); // Set token expiration time
+            //user.ResetPasswordTokenExpiry = DateTimeOffset.UtcNow.AddHours(1); // Set token expiration time
 
             // Save the changes to the database
             await _context.SaveChangesAsync();
