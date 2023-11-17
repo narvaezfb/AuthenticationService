@@ -15,7 +15,12 @@
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5092",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DB_USER": "narvaezfb",
+        "DB_PASSWORD": "AuthDb2023.",
+        "DB_NAME": "authdb",
+        "DB_HOST": "localhost",
+        "JWT_KEY": "fabitoSK8-myass-bitch"
       },
       "dotnetRunMessages": true
     },
@@ -25,7 +30,12 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7214;http://localhost:5092",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DB_USER": "narvaezfb",
+        "DB_PASSWORD": "AuthDb2023.",
+        "DB_NAME": "authdb",
+        "DB_HOST": "localhost",
+        "JWT_KEY": "fabitoSK8-myass-bitch"
       },
       "dotnetRunMessages": true
     },
@@ -34,7 +44,12 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DB_USER": "narvaezfb",
+        "DB_PASSWORD": "AuthDb2023.",
+        "DB_NAME": "authdb",
+        "DB_HOST": "localhost",
+        "JWT_KEY": "fabitoSK8-myass-bitch"
       }
     }
   }
