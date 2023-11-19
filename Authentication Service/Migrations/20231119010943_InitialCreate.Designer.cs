@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Authentication_Service.Migrations
 {
     [DbContext(typeof(AuthenticationServiceDbContext))]
-    [Migration("20231117191934_InitialCreate")]
+    [Migration("20231119010943_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -60,7 +60,7 @@ namespace Authentication_Service.Migrations
                     b.Property<string>("ResetPasswordToken")
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("ResetPasswordTokenExpiry")
+                    b.Property<DateTime>("ResetPasswordTokenExpiry")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("UserId");

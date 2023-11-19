@@ -32,7 +32,7 @@ namespace Authentication_Service.Models
 
         public string? ResetPasswordToken { get; set; }
         
-        public string? ResetPasswordTokenExpiry { get; set; }
+        public DateTime ResetPasswordTokenExpiry { get; set; }
 
 
 

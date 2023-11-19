@@ -23,7 +23,7 @@ namespace Authentication_Service.Migrations
                     Password = table.Column<string>(type: "text", nullable: false),
                     PasswordConfirm = table.Column<string>(type: "text", nullable: false),
                     ResetPasswordToken = table.Column<string>(type: "text", nullable: true),
-                    ResetPasswordTokenExpiry = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                    ResetPasswordTokenExpiry = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
