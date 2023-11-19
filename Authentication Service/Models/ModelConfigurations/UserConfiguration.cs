@@ -20,6 +20,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.UserId)
            .ValueGeneratedOnAdd()
            .HasDefaultValueSql("10000");
+        //set time stamp data type 
+        builder.Property(u => u.ResetPasswordTokenExpiry).HasColumnType("timestamp with time zone");
 
         //make email to be unique accross the entire app
         builder.HasIndex(u => u.Email).IsUnique();

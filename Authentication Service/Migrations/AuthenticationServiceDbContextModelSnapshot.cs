@@ -57,7 +57,7 @@ namespace Authentication_Service.Migrations
                     b.Property<string>("ResetPasswordToken")
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("ResetPasswordTokenExpiry")
+                    b.Property<DateTime>("ResetPasswordTokenExpiry")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("UserId");
