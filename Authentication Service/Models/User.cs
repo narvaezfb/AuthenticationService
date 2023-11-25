@@ -9,38 +9,41 @@ namespace Authentication_Service.Models
         [Required(ErrorMessage = "UserId is required")]
         public int UserId { get; set; }
 
-        [Required(ErrorMessage = "First name is required.")]
-        public required string FirstName { get; set; }
-
-        [Required(ErrorMessage = "Last name is required")]
-        public required string LastName { get; set; }
-
-        [Required(ErrorMessage = "Age is required")]
-        [Range(18, 99, ErrorMessage = "Age must be between 18 and 99.")]
-        public required int Age { get; set; }
+        [Required(ErrorMessage = "Username is required.")]
+        public string Username { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email address.")]
-        public required string Email { get; set; }
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Age is required")]
+        [Range(18, 99, ErrorMessage = "Age must be between 18 and 99.")]
+        public int Age { get; set; }
+
+        [Required(ErrorMessage = "Location")]
+        public string Location { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
-        public required string Password { get; set; }
-
-        [Required(ErrorMessage = "Password Confirm is required")]
-        public required string PasswordConfirm { get; set; }
-
+        public string Password { get; set; }
 
         public string? ResetPasswordToken { get; set; }
         
         public DateTime ResetPasswordTokenExpiry { get; set; }
 
+        public User(string username, string email, int age, string location, string password)
+        {
+            Username = username;
+            Email = email;
+            Age = age;
+            Location = location;
+            Password = password;
+        }
 
 
         public bool ConfirmPasswords(string inputPassword, string inputConfirmPassword)
         {
             return inputPassword == inputConfirmPassword;
         }
-
 
         public string HashPassword(string inputPassword)
         {
@@ -51,7 +54,6 @@ namespace Authentication_Service.Models
 
             string encryptedPassword = BCrypt.Net.BCrypt.HashPassword(inputPassword);
             Password = encryptedPassword; 
-            PasswordConfirm = ""; 
 
             return encryptedPassword;
         }

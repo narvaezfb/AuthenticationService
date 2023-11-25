@@ -7,12 +7,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.HasKey(u => u.UserId);
-        builder.Property(u => u.FirstName).IsRequired().HasMaxLength(255);
-        builder.Property(u => u.LastName).IsRequired().HasMaxLength(255);
+        builder.Property(u => u.Username).IsRequired().HasMaxLength(255);
         builder.Property(u => u.Age).IsRequired();
         builder.Property(u => u.Email).IsRequired().HasMaxLength(255);
+        builder.Property(u => u.Location).IsRequired().HasMaxLength(255);
         builder.Property(u => u.Password).IsRequired();
-        builder.Property(u => u.PasswordConfirm).IsRequired();
         builder.Property(u => u.ResetPasswordToken);
         builder.Property(u => u.ResetPasswordTokenExpiry);
 
@@ -23,7 +22,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         //set time stamp data type 
         builder.Property(u => u.ResetPasswordTokenExpiry).HasColumnType("timestamp with time zone");
 
-        //make email to be unique accross the entire app
+        // unique attributes accross the entire app
+        builder.HasIndex(u => u.Username).IsUnique();
         builder.HasIndex(u => u.Email).IsUnique();
     }
 

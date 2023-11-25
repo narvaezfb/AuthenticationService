@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Authentication_Service.Controllers
 {
-    
+
     [ApiController]
     [Route("[Controller]")]
     public class UserController : ControllerBase
-	{
+    {
         private readonly AuthenticationServiceDbContext _context;
 
         public UserController(AuthenticationServiceDbContext context)
@@ -17,9 +17,9 @@ namespace Authentication_Service.Controllers
             _context = context;
         }
 
-       
+
         [Authorize]
-        [HttpPatch("UpdatePassword/{userId}", Name= "UpdatePassword")]
+        [HttpPatch("UpdatePassword/{userId}", Name = "UpdatePassword")]
         public async Task<IActionResult> UpdateUserPassword(int userId, [FromBody] UserPasswordUpdateModel userPasswordUpdateModel)
         {
             try
@@ -54,15 +54,15 @@ namespace Authentication_Service.Controllers
 
                 return Ok("success pasword update");
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while updating the password");
+                return StatusCode(500, $"An error occurred while updating the password, {ex}");
             }
-            
+
         }
 
         [Authorize]
@@ -76,7 +76,7 @@ namespace Authentication_Service.Controllers
 
             var user = await _context.User.FindAsync(userId);
 
-            if(user == null)
+            if (user == null)
             {
                 return BadRequest("No user found with that email");
             }
@@ -84,10 +84,10 @@ namespace Authentication_Service.Controllers
             // Create a UserUpdateModel instance and apply the patch document
             var userToPatch = new UserUpdateModel
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
+                Username = user.Username,
                 Age = user.Age,
-                Email = user.Email
+                Email = user.Email,
+                Location = user.Location
             };
 
             // Apply the patch document to the UserUpdateModel
@@ -100,10 +100,10 @@ namespace Authentication_Service.Controllers
             }
 
             // Update attributes in the user entity
-            user.FirstName = userToPatch.FirstName;
-            user.LastName = userToPatch.LastName;
+            user.Username = userToPatch.Username;
             user.Age = userToPatch.Age;
             user.Email = userToPatch.Email;
+            user.Location = userToPatch.Location;
 
             await _context.SaveChangesAsync();
 

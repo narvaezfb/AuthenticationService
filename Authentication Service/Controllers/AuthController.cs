@@ -5,14 +5,15 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Authentication_Service.Models;
+using Authentication_Service.Models.RequestModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Authentication_Service.Controllers
 {
     [ApiController]
     [Route("[Controller]")]
-    public class AuthController: ControllerBase
-	{
+    public class AuthController : ControllerBase
+    {
         private static string? _jwtKey;
         private static string? _jwtIssuer;
         private static string? _jwtAudience;
@@ -21,7 +22,7 @@ namespace Authentication_Service.Controllers
         private readonly IConfiguration _configuration;
 
         public AuthController(AuthenticationServiceDbContext context, IConfiguration configuration)
-		{
+        {
             _context = context;
             _configuration = configuration;
 
@@ -81,18 +82,20 @@ namespace Authentication_Service.Controllers
         }
 
         [HttpPost("Signup", Name = "Signup")]
-        public async Task<IActionResult> CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUser([FromBody] SignupModel signupModel)
         {
-            if (user == null)
+
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Person data is invalid.");
+                return BadRequest("User data is invalid.");
             }
 
-            if (!user.ConfirmPasswords(user.Password, user.PasswordConfirm))
+            if (!signupModel.ConfirmPasswords(signupModel.Password, signupModel.PasswordConfirm))
             {
                 return BadRequest("Passwords do not match");
             }
 
+            User user = new User(signupModel.Username, signupModel.Email, signupModel.Age, signupModel.Location, signupModel.Password);
             user.HashPassword(user.Password);
 
             _context.User.Add(user);
@@ -197,6 +200,7 @@ namespace Authentication_Service.Controllers
 
             return await Task.FromResult(tokenString);
         }
+
     }
 }
 
