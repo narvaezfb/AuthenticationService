@@ -30,7 +30,7 @@ namespace Authentication_Service.Models
         
         public DateTime ResetPasswordTokenExpiry { get; set; }
 
-        public User(string username, string email, int age, string location, string password)
+        public User( string username, string email, int age, string location, string password)
         {
             Username = username;
             Email = email;
