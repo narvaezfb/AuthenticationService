@@ -4,6 +4,7 @@ namespace Authentication_Service.Models.RequestModels
 {
 	public class SignupModel
 	{
+        //public int UserId { get; set; }
 		[Required(ErrorMessage ="Username is required!")]
 		public required string Username { get; set; }
 

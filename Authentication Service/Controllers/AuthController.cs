@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Authentication_Service.Models;
+using Authentication_Service.Responses;
 using Authentication_Service.Models.RequestModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,9 +39,13 @@ namespace Authentication_Service.Controllers
         [AllowAnonymous]
         public IActionResult ValidateToken([FromBody] string token)
         {
+            TokenValidationResponse response = new TokenValidationResponse();
+          
             if (string.IsNullOrWhiteSpace(token))
             {
-                return BadRequest("Token is empty or invalid.");
+
+                response = new TokenValidationResponse("FAILURE", 400, false, "Empty token");
+                return BadRequest(response);
             }
 
             try
@@ -65,15 +70,17 @@ namespace Authentication_Service.Controllers
                 var validatedJwt = validatedToken as JwtSecurityToken;
                 if (validatedJwt == null)
                 {
-                    return BadRequest("Invalid token.");
+                    response = new TokenValidationResponse("FAILURE", 401, false, "Invalid Token");
+                    return BadRequest(response);
                 }
 
-                // Token validation successful
-                return Ok("Token is valid.");
+                response = new TokenValidationResponse("SUCCESS", 200, true, null);
+                return Ok(response);
             }
             catch (SecurityTokenException)
             {
-                return BadRequest("Invalid token.");
+                response = new TokenValidationResponse("FAILURE", 401, false, "Invalid token");
+                return BadRequest(response);
             }
             catch (Exception ex)
             {

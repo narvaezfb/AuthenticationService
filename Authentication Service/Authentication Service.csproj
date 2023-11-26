@@ -36,6 +36,7 @@
     <None Remove="Models\ModelConfigurations\" />
     <None Remove="Migrations\" />
     <None Remove="Models\RequestModels\" />
+    <None Remove="Responses\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -43,5 +44,6 @@
     <Folder Include="Models\ModelConfigurations\" />
     <Folder Include="Migrations\" />
     <Folder Include="Models\RequestModels\" />
+    <Folder Include="Responses\" />
   </ItemGroup>
 </Project>
