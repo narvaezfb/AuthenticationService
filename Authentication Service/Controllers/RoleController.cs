@@ -23,7 +23,7 @@ namespace Authentication_Service.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet("RetrieveAllRoles", Name = "Retrieve All Roles")]
-        public IActionResult GetRoles()
+        public ActionResult GetRoles()
         {
             var roles = _context.Roles.ToList();
             return Ok(roles);
@@ -32,7 +32,7 @@ namespace Authentication_Service.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet("RetrieveOneRole/{id}", Name ="Get single Role")]
-        public async Task<IActionResult> GetOneRole(int id)
+        public async Task<ActionResult> GetOneRole(int id)
         {
             var role = await _context.Roles.FindAsync(id);
 
@@ -46,7 +46,7 @@ namespace Authentication_Service.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("CreateRole", Name = "Create Role")]
-        public async Task<IActionResult> CreateRole([FromBody] CreateRole createRole)
+        public async Task<ActionResult> CreateRole([FromBody] CreateRole createRole)
         {
             if(!ModelState.IsValid)
             {

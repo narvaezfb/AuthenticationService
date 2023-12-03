@@ -37,7 +37,7 @@ namespace Authentication_Service.Controllers
 
         [HttpPost("validateToken", Name = "ValidateToken")]
         [AllowAnonymous]
-        public IActionResult ValidateToken([FromBody] string token)
+        public ActionResult ValidateToken([FromBody] string token)
         {
             TokenValidationResponse response = new TokenValidationResponse();
           
@@ -88,8 +88,68 @@ namespace Authentication_Service.Controllers
             }
         }
 
+        [HttpPost("validateAdminToken", Name = "ValidateAdminToken")]
+        [AllowAnonymous]
+        public ActionResult ValidateAdminToken([FromBody] string token)
+        {
+            TokenValidationResponse response = new TokenValidationResponse();
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+
+                response = new TokenValidationResponse("FAILURE", 400, false, "Empty token");
+                return BadRequest(response);
+            }
+
+            try
+            {
+                // Configure token validation parameters
+                var tokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = _jwtIssuer,
+                    ValidAudience = _jwtAudience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtKey))
+                };
+
+                // Token validation using JwtSecurityTokenHandler
+                var tokenHandler = new JwtSecurityTokenHandler();
+                ClaimsPrincipal claimsPrincipal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken validatedToken);
+
+                // Extract claims from the validated token
+                var validatedJwt = validatedToken as JwtSecurityToken;
+                if (validatedJwt == null)
+                {
+                    response = new TokenValidationResponse("FAILURE", 401, false, "Invalid Token");
+                    return BadRequest(response);
+                }
+
+               
+                if (!claimsPrincipal.IsInRole("Admin"))
+                {
+                    response = new TokenValidationResponse("FAILURE", 401, false, "Role does not have permissions");
+                    return BadRequest(response);
+                }
+
+                response = new TokenValidationResponse("SUCCESS", 200, true, null);
+                return Ok(response);
+            }
+            catch (SecurityTokenException)
+            {
+                response = new TokenValidationResponse("FAILURE", 401, false, "Invalid token");
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while validating the token: {ex.Message}");
+            }
+        }
+
         [HttpPost("Signup", Name = "Signup")]
-        public async Task<IActionResult> CreateUser([FromBody] SignupModel signupModel)
+        public async Task<ActionResult> CreateUser([FromBody] SignupModel signupModel)
         {
 
             if (!ModelState.IsValid)
@@ -122,7 +182,7 @@ namespace Authentication_Service.Controllers
         }
 
         [HttpPost("Login", Name = "Login")]
-        public async Task<IActionResult> Login([FromBody] Login login)
+        public async Task<ActionResult> Login([FromBody] Login login)
         {
             if (!ModelState.IsValid)
             {
@@ -145,7 +205,7 @@ namespace Authentication_Service.Controllers
         }
 
         [HttpPost("ForgotPassword", Name = "ForgotPassword")]
-        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordModel forgotPasswordModel)
+        public async Task<ActionResult> ForgotPassword([FromBody] ForgotPasswordModel forgotPasswordModel)
         {
             if (!ModelState.IsValid)
             {
