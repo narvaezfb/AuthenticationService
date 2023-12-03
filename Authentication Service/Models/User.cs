@@ -7,7 +7,7 @@ namespace Authentication_Service.Models
 	public class User
 	{
         [Required(ErrorMessage = "UserId is required")]
-        public int UserId { get; set; }
+        public int UserID { get; set; }
 
         [Required(ErrorMessage = "Username is required.")]
         public string Username { get; set; }
@@ -30,13 +30,19 @@ namespace Authentication_Service.Models
         
         public DateTime ResetPasswordTokenExpiry { get; set; }
 
-        public User( string username, string email, int age, string location, string password)
+        [Required(ErrorMessage = "User must always have a role")]
+        public int RoleID { get; set; }
+
+        public Role Role { get; set; }
+
+        public User( string username, string email, int age, string location, string password, int roleID)
         {
             Username = username;
             Email = email;
             Age = age;
             Location = location;
             Password = password;
+            RoleID = roleID;
         }
 
 

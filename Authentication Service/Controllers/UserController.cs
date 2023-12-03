@@ -18,7 +18,7 @@ namespace Authentication_Service.Controllers
         }
 
 
-        [Authorize]
+        [Authorize(Roles = "Admin,User")]
         [HttpPatch("UpdatePassword/{userId}", Name = "UpdatePassword")]
         public async Task<IActionResult> UpdateUserPassword(int userId, [FromBody] UserPasswordUpdateModel userPasswordUpdateModel)
         {
@@ -29,7 +29,7 @@ namespace Authentication_Service.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var user = await _context.User.FindAsync(userId);
+                var user = await _context.Users.FindAsync(userId);
 
                 if (user == null)
                 {
@@ -65,7 +65,7 @@ namespace Authentication_Service.Controllers
 
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin,User")]
         [HttpPatch("EditUserAccount/{userId}", Name = "EditUserAccount")]
         public async Task<ActionResult> EditUserInformation(int userId, [FromBody] JsonPatchDocument<UserUpdateModel> patchDoc)
         {
@@ -74,7 +74,7 @@ namespace Authentication_Service.Controllers
                 return BadRequest("Not model included");
             }
 
-            var user = await _context.User.FindAsync(userId);
+            var user = await _context.Users.FindAsync(userId);
 
             if (user == null)
             {
@@ -110,17 +110,17 @@ namespace Authentication_Service.Controllers
             return Ok(user);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin,User")]
         [HttpDelete("DeleteAccount/{userId}", Name = "DeleteAccount")]
         public async Task<IActionResult> DeleteAccount(int userId)
         {
-            var user = await _context.User.FindAsync(userId);
+            var user = await _context.Users.FindAsync(userId);
             if (user == null)
             {
                 return NotFound("Not user found with that ID");
             }
 
-            _context.User.Remove(user);
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
             return NoContent();
