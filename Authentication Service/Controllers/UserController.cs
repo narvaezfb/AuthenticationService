@@ -20,7 +20,7 @@ namespace Authentication_Service.Controllers
 
         [Authorize(Roles = "Admin,User")]
         [HttpPatch("UpdatePassword/{userId}", Name = "UpdatePassword")]
-        public async Task<IActionResult> UpdateUserPassword(int userId, [FromBody] UserPasswordUpdateModel userPasswordUpdateModel)
+        public async Task<ActionResult> UpdateUserPassword(int userId, [FromBody] UserPasswordUpdateModel userPasswordUpdateModel)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace Authentication_Service.Controllers
 
         [Authorize(Roles = "Admin,User")]
         [HttpDelete("DeleteAccount/{userId}", Name = "DeleteAccount")]
-        public async Task<IActionResult> DeleteAccount(int userId)
+        public async Task<ActionResult> DeleteAccount(int userId)
         {
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
