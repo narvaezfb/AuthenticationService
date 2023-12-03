@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Authentication_Service.Migrations
 {
     [DbContext(typeof(AuthenticationServiceDbContext))]
-    [Migration("20231126215310_InitialCreate")]
+    [Migration("20231203002219_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,13 +24,35 @@ namespace Authentication_Service.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Authentication_Service.Models.User", b =>
+            modelBuilder.Entity("Authentication_Service.Models.Role", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("RoleID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RoleID"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.HasKey("RoleID");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("Authentication_Service.Models.User", b =>
+                {
+                    b.Property<int>("UserID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserID"));
 
                     b.Property<int>("Age")
                         .HasColumnType("integer");
@@ -55,20 +77,41 @@ namespace Authentication_Service.Migrations
                     b.Property<DateTime>("ResetPasswordTokenExpiry")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("RoleID")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("UserID");
 
                     b.HasIndex("Email")
                         .IsUnique();
 
+                    b.HasIndex("RoleID");
+
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Authentication_Service.Models.User", b =>
+                {
+                    b.HasOne("Authentication_Service.Models.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Authentication_Service.Models.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

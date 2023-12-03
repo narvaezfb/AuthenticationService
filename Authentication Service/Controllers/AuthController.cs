@@ -101,16 +101,16 @@ namespace Authentication_Service.Controllers
             {
                 return BadRequest("Passwords do not match");
             }
+            const int userRoleID = 3;
 
-            User user = new User(signupModel.Username, signupModel.Email, signupModel.Age, signupModel.Location, signupModel.Password);
+            User user = new User(signupModel.Username, signupModel.Email, signupModel.Age, signupModel.Location, signupModel.Password, userRoleID);
             user.HashPassword(user.Password);
 
-            _context.User.Add(user);
+            _context.Users.Add(user);
 
             await _context.SaveChangesAsync();
 
-            // Generate a JWT token without authentication
-            var token = await GenerateJwtTokenAsync(user.Email, new[] { "admin" }, _jwtKey, _jwtIssuer, _jwtAudience);
+            var token = await GenerateJwtTokenAsync(user.Email, new[] {"User"}, _jwtKey, _jwtIssuer, _jwtAudience);
 
             var responseData = new
             {
@@ -129,17 +129,18 @@ namespace Authentication_Service.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == login.Email).ConfigureAwait(false);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == login.Email).ConfigureAwait(false);
 
             if (user == null || user.VerifyPassword(login.Password, user.Password) == false)
             {
                 return BadRequest("Authentication failed");
             }
 
-            // Generate a JWT token without authentication
-            var token = await GenerateJwtTokenAsync(user.Email, new[] { "admin" }, _jwtKey, _jwtIssuer, _jwtAudience);
+            var roles = await createListOfRoles(user.RoleID);
 
-            return Ok(new { token });
+            var token = await GenerateJwtTokenAsync(user.Email, roles, _jwtKey, _jwtIssuer, _jwtAudience);
+
+            return Ok(new { token, user });
 
         }
 
@@ -151,7 +152,7 @@ namespace Authentication_Service.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == forgotPasswordModel.Email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == forgotPasswordModel.Email);
 
             if (user == null)
             {
@@ -206,6 +207,14 @@ namespace Authentication_Service.Controllers
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
             return await Task.FromResult(tokenString);
+        }
+
+        private async Task<string[]> createListOfRoles(int RoleID)
+        {
+            var role = await _context.Roles.FindAsync(RoleID);
+            string[] roles = new string[] { role.Name };
+            return roles;
+            
         }
 
     }

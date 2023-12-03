@@ -8,12 +8,14 @@ public class AuthenticationServiceDbContext : DbContext
     {
     }
 
-    public DbSet<User> User { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Role> Roles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Apply entity configurations from separate configuration classes
         modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new RoleConfiguration());
         // Other configurations
     }
 }

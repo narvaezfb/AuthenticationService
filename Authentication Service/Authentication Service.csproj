@@ -37,6 +37,9 @@
     <None Remove="Migrations\" />
     <None Remove="Models\RequestModels\" />
     <None Remove="Responses\" />
+    <None Remove="Models\RequestModels\AuthRequest\" />
+    <None Remove="Models\RequestModels\RoleRequest\" />
+    <None Remove="Models\RequestModels\UserRequest\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -45,5 +48,8 @@
     <Folder Include="Migrations\" />
     <Folder Include="Models\RequestModels\" />
     <Folder Include="Responses\" />
+    <Folder Include="Models\RequestModels\AuthRequest\" />
+    <Folder Include="Models\RequestModels\RoleRequest\" />
+    <Folder Include="Models\RequestModels\UserRequest\" />
   </ItemGroup>
 </Project>
